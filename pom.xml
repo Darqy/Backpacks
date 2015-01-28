@@ -1,12 +1,16 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>me.darqy</groupId>
-    <artifactId>backpacks</artifactId>
-    <version>1.3</version>
-    <name>Backpacks</name>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    
+    <groupId>me.darqy</groupId>
+    <artifactId>Backpacks</artifactId>
+    <version>1.3.1</version>
+    <name>Backpacks</name>
+    <description>Have multiple backpacks in a group of worlds</description>
+   
     <repositories>
         <repository>
             <id>bukkit-repo</id>
@@ -14,7 +18,7 @@
         </repository>
     </repositories>
     <build>
-        <finalName>${project.name}</finalName>
+        <!-- <finalName>${project.name}</finalName> -->
         <defaultGoal>clean install</defaultGoal>
         <resources>
             <resource>
@@ -36,32 +40,53 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <copy file="../${project.name}/target/${project.name}-${project.version}.jar"
+                                      tofile="../${project.name}/target/${project.name}.jar"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.6.4-R2.0</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.8-R0.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/bin/spigot-api-1.8-R0.1-SNAPSHOT.jar</systemPath>
         </dependency>
-       <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.7.2-R0.1-SNAPSHOT</version>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8-R0.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/bin/spigot-1.8-R0.1-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
           <groupId>org.yi.acru.bukkit</groupId>
           <artifactId>lockette</artifactId>
-          <version>1.7.10</version>
+          <version>1.8.9</version>
           <scope>system</scope>
-          <systemPath>${project.basedir}/lib/Lockette.jar</systemPath>
+          <systemPath>${project.basedir}/bin/Lockette-1.8.9.jar</systemPath>
         </dependency>
         <dependency>
           <groupId>com.daemitus</groupId>
           <artifactId>deadbolt</artifactId>
-          <version>2.1.3</version>
+          <version>2.2</version>
           <scope>system</scope>
-          <systemPath>${project.basedir}/lib/Deadbolt.jar</systemPath>
+          <systemPath>${project.basedir}/bin/Deadbolt-2.2-b21.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

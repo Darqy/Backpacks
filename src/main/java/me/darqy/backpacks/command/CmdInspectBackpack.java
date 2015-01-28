@@ -8,13 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import me.darqy.backpacks.Backpack;
 import me.darqy.backpacks.BackpackManager;
-import me.darqy.backpacks.Backpacks;
+import me.darqy.backpacks.BackpacksPlugin;
 
 public class CmdInspectBackpack implements CommandExecutor, Listener {
     
-    private Backpacks plugin;
+    private BackpacksPlugin plugin;
     
-    public CmdInspectBackpack(Backpacks plugin) {
+    public CmdInspectBackpack(BackpacksPlugin plugin) {
         this.plugin = plugin;
     }
 

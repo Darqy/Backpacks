@@ -6,15 +6,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import me.darqy.backpacks.BackpackManager;
-import me.darqy.backpacks.Backpacks;
+import me.darqy.backpacks.BackpacksPlugin;
 import me.darqy.backpacks.BackpacksConfig;
 import me.darqy.backpacks.PlayerBackpacks;
 
 public class CmdCreateBackpack implements CommandExecutor {
     
-    private Backpacks plugin;
+    private BackpacksPlugin plugin;
     
-    public CmdCreateBackpack(Backpacks plugin) {
+    public CmdCreateBackpack(BackpacksPlugin plugin) {
         this.plugin = plugin;
     }
     

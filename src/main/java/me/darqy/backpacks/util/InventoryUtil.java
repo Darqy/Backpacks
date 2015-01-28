@@ -2,12 +2,12 @@ package me.darqy.backpacks.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.server.v1_7_R1.ItemStack;
-import net.minecraft.server.v1_7_R1.NBTTagCompound;
-import net.minecraft.server.v1_7_R1.NBTTagList;
+import net.minecraft.server.v1_8_R1.ItemStack;
+import net.minecraft.server.v1_8_R1.NBTTagCompound;
+import net.minecraft.server.v1_8_R1.NBTTagList;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 
 public final class InventoryUtil {

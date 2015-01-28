@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import me.darqy.backpacks.Backpack;
 import me.darqy.backpacks.BackpackManager;
-import me.darqy.backpacks.Backpacks;
+import me.darqy.backpacks.BackpacksPlugin;
 import me.darqy.backpacks.PlayerBackpacks;
 import me.darqy.backpacks.util.InventoryUtil;
 import me.darqy.backpacks.util.NMSUtil;
@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class CmdBackpackUtils implements CommandExecutor {
     
-    private Backpacks plugin;
+    private BackpacksPlugin plugin;
     private MagnetListener magnet = this.new MagnetListener();
     
     private static final String[] TOOLS = new String[] {
@@ -37,7 +37,7 @@ public class CmdBackpackUtils implements CommandExecutor {
     private static final String RENAME_USAGE = "rename [new-pack]";
     private static final String EMPTY_USAGE = "empty";
     
-    public CmdBackpackUtils(Backpacks instance) {
+    public CmdBackpackUtils(BackpacksPlugin instance) {
         this.plugin = instance;
         
         plugin.getServer().getPluginManager().registerEvents(magnet, plugin);

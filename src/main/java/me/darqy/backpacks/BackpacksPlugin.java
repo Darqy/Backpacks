@@ -20,9 +20,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
-public class Backpacks extends JavaPlugin {
+public class BackpacksPlugin extends JavaPlugin {
 
-    private static final String NBT_CLASS = "net.minecraft.server.v1_7_R1.NBTBase";
+    private static final String NBT_CLASS = "net.minecraft.server.v1_8_R1.NBTBase";
     
     private final Map<String, BackpackManager> managers = new HashMap();
     
@@ -260,9 +260,9 @@ public class Backpacks extends JavaPlugin {
 
     private static class BackpackSaver extends BukkitRunnable {
 
-        private Backpacks plugin;
+        private BackpacksPlugin plugin;
 
-        public BackpackSaver(Backpacks instance) {
+        public BackpackSaver(BackpacksPlugin instance) {
             this.plugin = instance;
         }
 

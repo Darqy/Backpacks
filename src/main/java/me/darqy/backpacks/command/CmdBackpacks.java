@@ -4,13 +4,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import me.darqy.backpacks.Backpacks;
+import me.darqy.backpacks.BackpacksPlugin;
 
 public class CmdBackpacks implements CommandExecutor {
     
-    private Backpacks plugin;
+    private BackpacksPlugin plugin;
     
-    public CmdBackpacks(Backpacks plugin) {
+    public CmdBackpacks(BackpacksPlugin plugin) {
         this.plugin = plugin;
     }
     

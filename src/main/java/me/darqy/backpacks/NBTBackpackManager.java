@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.server.v1_7_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_7_R1.NBTTagCompound;
+import net.minecraft.server.v1_8_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import org.bukkit.inventory.Inventory;
 
 public class NBTBackpackManager extends BackpackManager {

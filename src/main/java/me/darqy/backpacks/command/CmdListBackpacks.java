@@ -8,13 +8,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import me.darqy.backpacks.Backpacks;
+import me.darqy.backpacks.BackpacksPlugin;
 
 public class CmdListBackpacks implements CommandExecutor {
 
-    private Backpacks plugin;
+    private BackpacksPlugin plugin;
 
-    public CmdListBackpacks(Backpacks plugin) {
+    public CmdListBackpacks(BackpacksPlugin plugin) {
         this.plugin = plugin;
     }
 
