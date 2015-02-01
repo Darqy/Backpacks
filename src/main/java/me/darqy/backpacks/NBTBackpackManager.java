@@ -18,6 +18,8 @@ public class NBTBackpackManager extends BackpackManager {
 
     private File data_dir;
     private Map<String, NBTTagCompound> tags = new HashMap();
+    
+    private static final int NBT_TAG_COMPOUND_ID = 10;
 
     public NBTBackpackManager(File dir) {
         data_dir = dir;
@@ -74,7 +76,7 @@ public class NBTBackpackManager extends BackpackManager {
     @Override
     public boolean loadBackpack(String player, String backpack) {
         NBTTagCompound tag = getNBT(player);
-        if (!tag.hasKeyOfType(backpack, 10)) {
+        if (!tag.hasKeyOfType(backpack, NBT_TAG_COMPOUND_ID)) {
             return false;
         }
         Inventory inv = InventoryUtil.invFromNbt(tag.getCompound(backpack), "Backpack - " + backpack);
