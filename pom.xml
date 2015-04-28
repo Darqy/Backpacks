@@ -68,11 +68,11 @@
             <systemPath>${project.basedir}/bin/spigot-api-1.8-R0.1-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.8-R0.1-SNAPSHOT</version>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.8.3-R0.1-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/bin/spigot-1.8-R0.1-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/bin/craftbukkit-1.8.3.jar</systemPath>
         </dependency>
         <dependency>
           <groupId>org.yi.acru.bukkit</groupId>
