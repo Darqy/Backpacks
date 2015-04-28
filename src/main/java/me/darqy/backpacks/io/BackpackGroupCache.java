@@ -174,13 +174,14 @@ public class BackpackGroupCache {
      */
     public void renameBackpack(UUID owner, String oldBackpack, String newBackpack) {
         validState();
-        
-        io.removeBackpack(owner, oldBackpack); // remove old backpack from disk
-                
         Inventory existing = getBackpack(owner, oldBackpack);
         if (existing == null) {
+            // if old backpack doesn't exist, don't do anything
             return;
         }
+        
+        // remove old backpack from disk
+        io.removeBackpack(owner, oldBackpack);
         
         // remove old backpack from cache
         getPlayerBackpacks(owner).remove(oldBackpack);
