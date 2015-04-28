@@ -2,10 +2,10 @@ package me.darqy.backpacks.command;
 
 import java.util.HashMap;
 import java.util.Map;
-import me.darqy.backpacks.Backpack;
-import me.darqy.backpacks.BackpackManager;
+import java.util.UUID;
+import me.darqy.backpacks.BackpackInventoryHolder;
 import me.darqy.backpacks.BackpacksPlugin;
-import me.darqy.backpacks.PlayerBackpacks;
+import me.darqy.backpacks.io.BackpackGroupCache;
 import me.darqy.backpacks.util.InventoryUtil;
 import me.darqy.backpacks.util.NMSUtil;
 import org.bukkit.ChatColor;
@@ -19,14 +19,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class CmdBackpackUtils implements CommandExecutor {
     
-    private BackpacksPlugin plugin;
-    private MagnetListener magnet = this.new MagnetListener();
+    private final BackpacksPlugin plugin;
+    private final MagnetListener magnet = new MagnetListener();
     
     private static final String[] TOOLS = new String[] {
         "magnet", "chest", "rename", "empty",
@@ -73,37 +74,49 @@ public class CmdBackpackUtils implements CommandExecutor {
             return true;
         }
         
-        BackpackManager manager = plugin.getManager(p.getWorld());
-        if (manager == null) {
+        BackpackGroupCache cache = plugin.getGroupCache(p.getWorld());
+        if (cache == null) {
             s.sendMessage(ChatColor.RED + "Sorry, can't do that in this world.");
             return true;
         }
-
         
         String backpack = getExtraArg(args, "p:", "default");
         
         String player = p.getName();
+        UUID owner = p.getUniqueId();
         boolean other = Permissions.utilBackpackOther(s);
         if (other) {
             player = getExtraArg(args, "pl:", player);
+            owner = BackpacksPlugin.getOfflinePlayerUUID(player);
+            if (owner == null) {
+                s.sendMessage(ChatColor.RED + "Player invalid.");
+                return true;
+            }
         }
-
-        PlayerBackpacks packs = manager.getPlayerBackpacks(player);
-        Backpack pack = packs.getBackpack(backpack);
-        if (pack == null) {
+        
+        Inventory inv = cache.getBackpack(owner, backpack);
+        if (inv == null) {
             s.sendMessage(ChatColor.RED + "You don't have that backpack.");
             return true;
         }
         
         if ("magnet".equals(action)) {
-            handleMagnet(p, pack, backpack);
+            if (!magnet.magnetEnabled(p.getName())) {
+                magnet.enableMagnet(p.getName(), BackpackInventoryHolder.of(inv));
+                p.sendMessage(ChatColor.YELLOW + "Enabled magnet mode on your "
+                        + "\"" + backpack + "\" backpack.");
+                p.sendMessage(ChatColor.YELLOW + "Redo this command to disable it.");
+            } else {
+                magnet.disableMagnet(p.getName());
+                p.sendMessage(ChatColor.YELLOW + "Magnet mode disabled.");
+            }
         } else if ("chest".equals(action)) {
             if (args.length < 3) {
                 p.sendMessage(ChatColor.RED + "Not enough arguments.");
                 p.sendMessage(getUsage(c, ChatColor.YELLOW, l, CHEST_USAGE));
                 return true;
             }
-            handleChestTransfer(p, pack, args[1], args[2]);
+            handleChestTransfer(p, inv, args[1], args[2]);
         } else if ("rename".equals(action)) {
             if (args.length < 3) {
                 p.sendMessage(ChatColor.RED + "Not enough arguments.");
@@ -111,7 +124,22 @@ public class CmdBackpackUtils implements CommandExecutor {
                         .replace("(p:[backpack])", "[p:old-pack]"));
                 return true;
             }
-            handleRename(p, player, manager, packs, backpack, args[1].toLowerCase());
+            // handling rename
+            String newname = args[1].toLowerCase();
+            if (newname.length() > 16) {
+                s.sendMessage(ChatColor.YELLOW + "Please choose a backpack name under 16 characters");
+                return true;
+            }
+            
+            if (cache.getBackpackNames(owner).contains(newname)) {
+                p.sendMessage(ChatColor.RED + "A backpack named \"" + newname + "\", already exists");
+                return true;
+            }
+            
+            // do the actual rename
+            cache.renameBackpack(owner, backpack, newname);
+        
+            p.sendMessage(ChatColor.YELLOW + "Your \"" + backpack + "\" backpack is renamed to: \"" + newname + "\"");
         } else if ("empty".equals(action)) {
             if (args.length < 2) {
                 p.sendMessage(ChatColor.RED + "Not enough arguments.");
@@ -119,25 +147,24 @@ public class CmdBackpackUtils implements CommandExecutor {
                         .replace("(p:[backpack])", "[p:old-pack]"));
                 return true;
             }
-            handleEmpty(p, pack, backpack);
+            inv.clear();
+            p.sendMessage(ChatColor.YELLOW + "Your \"" + backpack + "\" backpack was emptied");
         }
 
         return true;
     }
     
-    private void handleMagnet(Player p, Backpack pack, String backpack) {
-        if (!magnet.magnetEnabled(p.getName())) {
-            magnet.enableMagnet(p.getName(), pack);
-            p.sendMessage(ChatColor.YELLOW + "Enabled magnet mode on your "
-                    + "\"" + backpack + "\" backpack.");
-            p.sendMessage(ChatColor.YELLOW + "Do this command again to disable it.");
+    private void handleChestTransfer(Player p, Inventory backpack, String action, String item) {
+        int direction = 0;
+        if (action.equalsIgnoreCase("put")) {
+            direction = 1;
+        } else if (action.equalsIgnoreCase("take")) {
+            direction = -1;
         } else {
-            magnet.disableMagnet(p.getName());
-            p.sendMessage(ChatColor.YELLOW + "Magnet mode disabled.");
+            p.sendMessage(ChatColor.RED + "Error: " + action + ". Use \"put\" or \"take\"");
+            return;
         }
-    }
-    
-    private void handleChestTransfer(Player p, Backpack pack, String action, String item) {
+        
         Block target = p.getTargetBlock(null, 5);
         if (!(target.getState() instanceof Chest)) {
             p.sendMessage(ChatColor.RED + "You must be looking at a chest to do that");
@@ -151,40 +178,17 @@ public class CmdBackpackUtils implements CommandExecutor {
         
         Chest chest = (Chest) target.getState();
 
-        Inventory from, to;
-        if (action.equalsIgnoreCase("put")) {
-            to = chest.getInventory();
-            from = pack.getInventory();
-        } else if (action.equalsIgnoreCase("take")) {
-            to = pack.getInventory();
-            from = chest.getInventory();
-        } else {
-            p.sendMessage(ChatColor.RED + "Error: " + action + ". Use \"put\" or \"take\"");
-            return;
-        }
+        Inventory to = (direction == 1)? chest.getInventory() : backpack;
+        Inventory from = (direction == 1)? backpack : chest.getInventory();
 
         boolean success = InventoryUtil.transferItems(from, to, item);
         if (success) {
+            // mark inventory as modified
+            BackpackInventoryHolder.of(backpack).setUnsavedChanges(true);
             p.sendMessage(ChatColor.YELLOW + "Items transfered!");
         } else {
             p.sendMessage(ChatColor.RED + "Transfer failed. Invalid item?");
         }
-    }
-    
-    private void handleRename(Player p, String owner, BackpackManager mngr, PlayerBackpacks packs, String oldname, String newname) {
-        if (packs.hasBackpack(newname)) {
-            p.sendMessage(ChatColor.RED + "You can not remanme that backpack to \"" + newname + "\""
-                    + ", it already exists");
-            return;
-        }
-        
-        mngr.renameBackpack(owner, oldname, newname);
-        p.sendMessage(ChatColor.YELLOW + "Your \"" + oldname + "\" backpack is renamed to: \"" + newname + "\"");
-    }
-    
-    private void handleEmpty(Player p, Backpack pack, String backpack) {
-        pack.getInventory().clear();
-        p.sendMessage(ChatColor.YELLOW + "Your \"" + backpack + "\" backpack is now empty!");
     }
     
     public void handleHelp(Command c, Player p, String action, String l) {
@@ -281,14 +285,17 @@ public class CmdBackpackUtils implements CommandExecutor {
                     + "/" + l + " help [util] " + ChatColor.YELLOW + "for information and usage");
     }
             
-    private class MagnetListener implements Listener {
+    private final class MagnetListener implements Listener {
         
-        private Map<String, Backpack> magnets = new HashMap();
+        private Map<String, BackpackInventoryHolder> magnets = new HashMap();
         
         private static final String backpackFull = 
                 "Your backpack is full! Disabled magnet mode.";
+        private static final String loginDisable =
+                "We disabled the magnet on backpack because you logged out!";
+                
         
-        public void enableMagnet(String player, Backpack pack) {
+        public void enableMagnet(String player, BackpackInventoryHolder pack) {
             magnets.put(player, pack);
         }
         
@@ -308,17 +315,35 @@ public class CmdBackpackUtils implements CommandExecutor {
             final String player = p.getName();
             
             if (magnetEnabled(player)) {
-                final Backpack pack = magnets.get(player);
-                int left = pack.pickup(itemstack);
+                final BackpackInventoryHolder pack = magnets.get(player);
+                // mark holder as modified
+                pack.setUnsavedChanges(true);
                 
-                if (left > 0) {
+                Inventory inv = pack.getInventory();
+                
+                // add item to inventory and check how much remained
+                HashMap<Integer, ItemStack> left = inv.addItem(itemstack);
+                int remains = left.isEmpty()? 0 : left.get(0).getAmount();
+                
+                if (remains > 0) {
                     p.sendMessage(ChatColor.RED + backpackFull);
                     disableMagnet(player);
                     
-                    itemstack.setAmount(left);
-                    item.setItemStack(itemstack);
+                    ItemStack newStack = itemstack.clone();
+                    newStack.setAmount(remains);
+
+                    // spawn new Item at current item's location
+                    final Item newItem = item.getWorld().dropItem(item.getLocation(), itemstack);
+                    
+                    // maintain the previous item velocity
+                    newItem.setVelocity(item.getVelocity());
+                                        
+                    item.remove(); // remove the existing item
                 } else {
-                    NMSUtil.simulateItemPickup(p, item);
+                    // picked up whole stack; remove item
+                    if (plugin.isMinecraftCompatible()) {
+                        NMSUtil.simulateItemPickup(p, item);
+                    }
                     item.remove();
                 }
                 
@@ -332,6 +357,13 @@ public class CmdBackpackUtils implements CommandExecutor {
             
             if (magnetEnabled(player)) {
                 disableMagnet(player);
+            }
+        }
+        
+        @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+            if (magnetEnabled(event.getPlayer().getName())) {
+                event.getPlayer().sendMessage(ChatColor.YELLOW + loginDisable);
             }
         }
         

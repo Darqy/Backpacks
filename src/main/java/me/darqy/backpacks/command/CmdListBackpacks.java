@@ -2,17 +2,18 @@ package me.darqy.backpacks.command;
 
 import java.util.Collections;
 import java.util.List;
-import me.darqy.backpacks.BackpackManager;
+import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import me.darqy.backpacks.BackpacksPlugin;
+import me.darqy.backpacks.io.BackpackGroupCache;
 
 public class CmdListBackpacks implements CommandExecutor {
 
-    private BackpacksPlugin plugin;
+    private final BackpacksPlugin plugin;
 
     public CmdListBackpacks(BackpacksPlugin plugin) {
         this.plugin = plugin;
@@ -36,20 +37,27 @@ public class CmdListBackpacks implements CommandExecutor {
         if (args.length >= 2 && other) {
             player = args[1];
         }
+        
+        UUID owner = BackpacksPlugin.getOfflinePlayerUUID(player);
+        if (owner == null) {
+            s.sendMessage(ChatColor.RED + "Invalid player.");
+            return true;
+        }
 
-        BackpackManager manager = plugin.getBackpackManager(world);
-        if (manager == null) {
+        BackpackGroupCache cache = plugin.getGroupCache(world);
+        if (cache == null) {
             s.sendMessage(ChatColor.RED + "Sorry, can't do that in this world.");
             return true;
         }
         
-        List<String> packs = manager.getBackpackList(player);
-        Collections.sort(packs);
+        List<String> packs = cache.getBackpackNames(owner);
         
         if (packs.isEmpty()) {
             s.sendMessage(ChatColor.YELLOW + "No backpacks found");
             return true;
         }
+        
+        Collections.sort(packs);
         
         s.sendMessage(ChatColor.YELLOW + "Backpacks:");
         for (String name : packs) {

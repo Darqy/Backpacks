@@ -1,17 +1,20 @@
 package me.darqy.backpacks.command;
 
+import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import me.darqy.backpacks.Backpack;
-import me.darqy.backpacks.BackpackManager;
+import me.darqy.backpacks.BackpackInventoryHolder;
+import me.darqy.backpacks.BackpacksConfig;
 import me.darqy.backpacks.BackpacksPlugin;
+import me.darqy.backpacks.io.BackpackGroupCache;
+import org.bukkit.inventory.Inventory;
 
 public class CmdBackpack implements CommandExecutor {
     
-    private BackpacksPlugin plugin;
+    private final BackpacksPlugin plugin;
     
     public CmdBackpack(BackpacksPlugin plugin) {
         this.plugin = plugin;
@@ -24,6 +27,9 @@ public class CmdBackpack implements CommandExecutor {
             return true;
         }
         
+        Player player = (Player) s;
+        UUID owner = player.getUniqueId();
+        
         boolean named = Permissions.useBackpackNamed(s);
         if (!Permissions.useBackpack(s) && !named) {
             s.sendMessage(ChatColor.RED + "You don't have permission.");
@@ -33,26 +39,27 @@ public class CmdBackpack implements CommandExecutor {
         String backpack = args.length >= 1 && named?
                 args[0].toLowerCase() : "default";
 
-        BackpackManager manager = plugin.getManager(((Player) s).getWorld());
-        if (manager == null) {
-            s.sendMessage(ChatColor.RED + "Sorry, can't do that in this world.");
+        BackpackGroupCache cache = plugin.getGroupCache(player.getWorld());
+        if (cache == null) {
+            s.sendMessage(ChatColor.RED + "You can't use this command in this world.");
             return true;
         }
         
-        Backpack pack = manager.getPlayerBackpacks(s.getName()).getBackpack(backpack);
-        if (pack == null) {
-            if (backpack.equals("default") && CmdCreateBackpack.canCreateMoreBackpacks(manager, s)) {
+        Inventory inv = cache.getBackpack(player.getUniqueId(), backpack);
+        if (inv == null) {
+            if (backpack.equals("default") && CmdCreateBackpack.canCreateMoreBackpacks(cache, player.getUniqueId(), Permissions.createBackpackLimit(s, BackpacksConfig.getMaximumBackpacks()), Permissions.createBackpackLimitBypass(s))) {
                 s.sendMessage(ChatColor.YELLOW + "Default backpack not found... creating");
                 
-                pack = manager.getPlayerBackpacks(s.getName()).createBackpack(backpack);
+                // TODO: something for backpacks smaller than full size?
+                inv = BackpackInventoryHolder.asEmptyInventory(cache, owner, backpack, 54);
+                cache.setBackpack(owner, backpack, inv);
             } else {
-                s.sendMessage(ChatColor.RED + "You don't have that backpack.");
+                s.sendMessage(ChatColor.RED + "You don't have a backpack with that name. ");
                 return true;
             }
         }
         
-        final Player player = (Player) s;
-        pack.open(player);
+        player.openInventory(inv);
         return true;
     }
     

@@ -13,6 +13,12 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * SnooperApi provides a simple method to restrict a player from
+ * modifying a section of an inventory. The restriction ends as
+ * soon as the player closes the inventory.
+ * @author matt
+ */
 public class SnooperApi {
     
     public static final String META_KEY = "invsnooper";

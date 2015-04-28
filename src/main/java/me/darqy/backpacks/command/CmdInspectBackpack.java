@@ -1,18 +1,21 @@
 package me.darqy.backpacks.command;
 
+import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import me.darqy.backpacks.Backpack;
-import me.darqy.backpacks.BackpackManager;
 import me.darqy.backpacks.BackpacksPlugin;
+import me.darqy.backpacks.io.BackpackGroupCache;
+import me.darqy.backpacks.util.SnooperApi;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 
 public class CmdInspectBackpack implements CommandExecutor, Listener {
     
-    private BackpacksPlugin plugin;
+    private final BackpacksPlugin plugin;
     
     public CmdInspectBackpack(BackpacksPlugin plugin) {
         this.plugin = plugin;
@@ -35,12 +38,16 @@ public class CmdInspectBackpack implements CommandExecutor, Listener {
         }
         
         String player = args[0];
+        UUID owner = BackpacksPlugin.getOfflinePlayerUUID(player);
+        if (owner == null) {
+            s.sendMessage(ChatColor.RED + "Player invalid.");
+            return true;
+        }
         
         String backpack = "default";
         if (args.length >= 2) {
             backpack = args[1].toLowerCase();
         }
-        
                 
         final Player p = (Player) s;
         String world = args.length >= 3? args[2] : p.getWorld().getName();
@@ -49,19 +56,24 @@ public class CmdInspectBackpack implements CommandExecutor, Listener {
             return true;
         }
 
-        BackpackManager manager = plugin.getBackpackManager(world);
-        if (manager == null) {
+        BackpackGroupCache cache = plugin.getGroupCache(world);
+        if (cache == null) {
             s.sendMessage(ChatColor.RED + "Sorry, can't do that in this world.");
             return true;
         }
         
-        Backpack pack = manager.getPlayerBackpacks(player).getBackpack(backpack);
-        if (pack == null) {
+        Inventory inv = cache.getBackpack(owner, backpack);
+        if (inv == null) {
             s.sendMessage(ChatColor.RED + "That backpack doesn't exist");
             return true;
         }
         
-        pack.inspect(p, Permissions.inspectAndEditBackpack(s));
+        InventoryView view = p.openInventory(inv);
+        if (!Permissions.inspectAndEditBackpack(s)) {
+            SnooperApi.registerSnooper(p,
+                    SnooperApi.constraintHalf(SnooperApi.InvSection.TOP, view));
+        }
+
         s.sendMessage(ChatColor.YELLOW + "Viewing " + player + "'s \"" + backpack + "\" backpack");
         return true;
     }

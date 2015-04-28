@@ -1,27 +1,20 @@
 ## Backpacks configuration ##
+# save-interval: how often to queue all loaded backpacks for saving
+# save-per-tick: how many backpacks on a single tick
+# save-tick-delay: # of ticks delay between each save-per-tick
+# configured-world-only: require world in group.yml, or use default group if not configured
+# maximum-backpacks-per-group: maximum backpacks a player can have per group
+# inventory-title-format: format of inventory screen title on backpack
+# backend: nbt or yaml. nbt is more performant, but requires the server and Backpacks version to be the same
+# convert: nbt, yaml, or false. convert from this backend to the backend set above.
+# debug: for debugging
 
-# The interval, in ticks (1/20 second), between backpack saves
-# to disk
-save-interval: 6000
-
-# If true, a player will not be able to use backpack commands
-# if the world isn't properly configured in groups.yml
+save-interval: 500
+save-per-tick: 3
+save-tick-delay: 5
 configured-world-only: true
-
-# The maximum amount of backpacks a player may have, regardless of
-# their backpack.create.limit.<limit> node. This setting should be
-# reasonably low, so not too many permission checks are made.
-# Setting to 0 will disable the limit
 maximum-backpacks-per-group: 8
-
-# The backend to use: (available: yaml, nbt)
-# nbt will only work when the compiled Minecraft version of Backpacks
-# matches up with the Minecraft version on your server. Due to version
-# safeguard implemented by bukkit. Will automatically set to yaml if
-# versions don't match.
+inventory-title-format: "Backpack - &f%s"
 backend: nbt
-
-# Set to convert from a backend to the current in-use backend
-# Will archive any existing files
-# if set to false, no converting
 convert: false
+debug: false

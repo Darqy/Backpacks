@@ -1,18 +1,20 @@
 package me.darqy.backpacks.command;
 
+import java.util.UUID;
+import me.darqy.backpacks.BackpackInventoryHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import me.darqy.backpacks.BackpackManager;
 import me.darqy.backpacks.BackpacksPlugin;
 import me.darqy.backpacks.BackpacksConfig;
-import me.darqy.backpacks.PlayerBackpacks;
+import me.darqy.backpacks.io.BackpackGroupCache;
+import org.bukkit.inventory.Inventory;
 
 public class CmdCreateBackpack implements CommandExecutor {
     
-    private BackpacksPlugin plugin;
+    private final BackpacksPlugin plugin;
     
     public CmdCreateBackpack(BackpacksPlugin plugin) {
         this.plugin = plugin;
@@ -36,58 +38,56 @@ public class CmdCreateBackpack implements CommandExecutor {
             }
         }
         
-        String player = s.getName();
+        String playerName = s.getName();
         boolean other = Permissions.createBackpackOther(s);
         if (args.length >= 2 && other) {
-            player = args[1];
+            playerName = args[1];
         }
         
-        String world = args.length >= 3? args[2] : s instanceof Player? ((Player)s).getWorld().getName() : null;
+        String world = args.length >= 3? args[2] : s instanceof Player? ((Player) s).getWorld().getName() : null;
         if (world == null) {
             s.sendMessage(ChatColor.RED + "Missing world parameter!");
             return true;
         }
 
-        BackpackManager manager = plugin.getBackpackManager(world);
-        if (manager == null) {
+        BackpackGroupCache cache = plugin.getGroupCache(world);
+        if (cache == null) {
             s.sendMessage(ChatColor.RED + "Sorry, can't do that in this world.");
             return true;
         }
         
-        PlayerBackpacks backpacks = manager.getPlayerBackpacks(player);
+        UUID owner = BackpacksPlugin.getOfflinePlayerUUID(playerName);
+        if (owner == null) {
+            s.sendMessage(ChatColor.RED + "Invalid player.");
+            return true;
+        }
 
-        if (backpacks.hasBackpack(backpack)) {
+        if (cache.getBackpackNames(owner).contains(backpack)) {
             s.sendMessage(ChatColor.RED + "That backpack already exists.");
             return true;
         }
         
-        if (player.equals(s.getName()) && !canCreateMoreBackpacks(manager, s)) {
-            s.sendMessage(ChatColor.RED + "Sorry, you've reached your backpack"
-                            + " limit of " + pack_limit);
+        if (playerName.equals(s.getName()) && !canCreateMoreBackpacks(cache, owner, Permissions.createBackpackLimit(s, BackpacksConfig.getMaximumBackpacks()), Permissions.createBackpackLimitBypass(s))) {
+            s.sendMessage(ChatColor.RED + "Sorry, you've reached your limit of " + pack_limit + " backpacks.");
             return true;
         }
         
-        backpacks.createBackpack(backpack);
+        Inventory inv = BackpackInventoryHolder.asEmptyInventory(cache, owner, backpack, 54);
+        cache.setBackpack(owner, backpack, inv);
         s.sendMessage(ChatColor.YELLOW + "Created the new backpack: \"" + backpack + "\"");
 
         return true;
     }
     
     
-    public static boolean canCreateMoreBackpacks(BackpackManager manager, CommandSender sender) {
-        if (Permissions.createBackpackLimitBypass(sender)) {
-            return true;
-        }
-
+    public static boolean canCreateMoreBackpacks(BackpackGroupCache cache, UUID owner, int limit, boolean canBypassLimit) {
         int cap = BackpacksConfig.getMaximumBackpacks();
         if (cap <= 0) {
             return true;
         }
 
-        int count = manager.getBackpackCount(sender.getName());
-        int max = Permissions.createBackpackLimit(sender, cap);
-
-        return count < max;
+        int count = cache.getBackpackCount(owner);
+        return count < limit;
     }
     
 }

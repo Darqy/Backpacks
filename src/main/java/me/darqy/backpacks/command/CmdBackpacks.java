@@ -8,7 +8,7 @@ import me.darqy.backpacks.BackpacksPlugin;
 
 public class CmdBackpacks implements CommandExecutor {
     
-    private BackpacksPlugin plugin;
+    private final BackpacksPlugin plugin;
     
     public CmdBackpacks(BackpacksPlugin plugin) {
         this.plugin = plugin;
