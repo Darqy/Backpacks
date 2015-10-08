@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 import me.darqy.backpacks.BackpackInventoryHolder;
 import me.darqy.backpacks.util.NMSUtil;
-import net.minecraft.server.v1_8_R2.NBTCompressedStreamTools;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.NBTCompressedStreamTools;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 

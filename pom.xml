@@ -13,8 +13,8 @@
    
     <repositories>
         <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
     <build>
@@ -63,30 +63,22 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.8-R0.1-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/bin/spigot-api-1.8-R0.1-SNAPSHOT.jar</systemPath>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.8.3-R0.1-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/bin/craftbukkit-1.8.3.jar</systemPath>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>org.yi.acru.bukkit</groupId>
           <artifactId>lockette</artifactId>
-          <version>1.8.9</version>
-          <scope>system</scope>
-          <systemPath>${project.basedir}/bin/Lockette-1.8.9.jar</systemPath>
+          <version>1.8.20</version>
         </dependency>
         <dependency>
           <groupId>com.daemitus</groupId>
           <artifactId>deadbolt</artifactId>
           <version>2.2</version>
-          <scope>system</scope>
-          <systemPath>${project.basedir}/bin/Deadbolt-2.2-b21.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

@@ -1,5 +1,6 @@
 package me.darqy.backpacks.command;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -165,7 +166,7 @@ public class CmdBackpackUtils implements CommandExecutor {
             return;
         }
         
-        Block target = p.getTargetBlock(null, 5);
+        Block target = p.getTargetBlock(Collections.EMPTY_SET, 5);
         if (!(target.getState() instanceof Chest)) {
             p.sendMessage(ChatColor.RED + "You must be looking at a chest to do that");
             return;
