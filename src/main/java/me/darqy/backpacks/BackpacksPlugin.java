@@ -27,7 +27,7 @@ import org.yi.acru.bukkit.Lockette.Lockette;
 
 public class BackpacksPlugin extends JavaPlugin {
 
-    private static final String NBT_CLASS = "net.minecraft.server.v1_8_R2.NBTBase";
+    private static final String NBT_CLASS = "net.minecraft.server.v1_8_R3.NBTBase";
     /** Map of group names to their cache **/
     private final Map<String, BackpackGroupCache> group_caches = new HashMap();
     
