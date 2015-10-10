@@ -3,6 +3,12 @@ package me.darqy.backpacks.command;
 import org.bukkit.command.CommandSender;
 
 public class Permissions {
+    
+    private static final String PREFIX = "backpacks.";
+
+    private static boolean check(CommandSender s, String perm) {
+        return s.hasPermission(PREFIX + perm);
+    }
 
     public static boolean useBackpack(CommandSender sender) {
         return check(sender, "use");
@@ -68,12 +74,6 @@ public class Permissions {
     
     public static boolean backpacksAdmin(CommandSender sender) {
         return check(sender, "admin");
-    }
-
-    private static final String PREFIX = "backpacks.";
-
-    private static boolean check(CommandSender s, String perm) {
-        return s.hasPermission(PREFIX + perm);
     }
     
 }

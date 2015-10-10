@@ -25,15 +25,15 @@ public class BackpacksConfig {
         file = config_file;
         config = YamlConfiguration.loadConfiguration(file);
 
-        saveInterval = config.getLong("save-interval");
-        savesPerTick = config.getLong("save-per-tick");
-        saveTickDelay = config.getLong("save-tick-delay");
-        configuredOnly = config.getBoolean("configured-world-only");
-        maximumBackpacks = config.getInt("maximum-backpacks-per-group");
-        inventoryTitleFormat = config.getString("inventory-title-format");
-        backend = config.getString("backend");
-        convert = config.getString("convert");
-        debug = config.getBoolean("debug");
+        saveInterval = config.getLong("save-interval", saveInterval);
+        savesPerTick = config.getLong("save-per-tick", savesPerTick);
+        saveTickDelay = config.getLong("save-tick-delay", saveTickDelay);
+        configuredOnly = config.getBoolean("configured-world-only", configuredOnly);
+        maximumBackpacks = config.getInt("maximum-backpacks-per-group", maximumBackpacks);
+        inventoryTitleFormat = config.getString("inventory-title-format", inventoryTitleFormat);
+        backend = config.getString("backend", backend);
+        convert = config.getString("convert", convert);
+        debug = config.getBoolean("debug", debug);
     }
     
     

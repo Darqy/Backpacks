@@ -68,6 +68,7 @@ public final class InventoryUtil {
     
     /**
      * Close all open views of an inventory
+     * @param inventory inventory to close open views of
      */
     public static void closeAllViews(Inventory inventory) {
         for (HumanEntity e : new ArrayList<HumanEntity>(inventory.getViewers())) {

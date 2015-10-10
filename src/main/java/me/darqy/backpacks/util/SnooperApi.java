@@ -29,7 +29,15 @@ public class SnooperApi {
         TOP, BOTTOM
     }
 
-    public static void initialize(Plugin instance) {
+    public static void initialize(final Plugin instance) {
+        initialize(instance, ChatColor.RED + "You may not edit those items.");
+    }
+    /**
+     * Initialize SnooperAPI
+     * @param instance plugin instance to register events with
+     * @param denyMessage message to send when a restricted slot is altered
+     */
+    public static void initialize(final Plugin instance, final String denyMessage) {
         plugin = instance;
         plugin.getServer().getPluginManager().registerEvents(new Listener() {
             
@@ -44,7 +52,7 @@ public class SnooperApi {
                 if (constraint != null) {
                     if (constraint.slotRestricted(e.getRawSlot()) || e.isShiftClick()) {
                         e.setCancelled(true);
-                        player.sendMessage(ChatColor.RED + "You may not edit those items.");
+                        player.sendMessage(denyMessage);
                     }
                 }
             }
@@ -109,7 +117,6 @@ public class SnooperApi {
     }
     
     public static class Constraint {
-        
         int begin, end;
         
         public Constraint(int begin, int end) {
@@ -120,7 +127,6 @@ public class SnooperApi {
         boolean slotRestricted(int rawSlotId) {
             return (rawSlotId >= begin && rawSlotId <= end);
         }
-        
     }
     
 }
