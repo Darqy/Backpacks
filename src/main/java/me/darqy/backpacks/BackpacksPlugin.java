@@ -23,6 +23,7 @@ import me.darqy.backpacks.util.FileUtil;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
 public class BackpacksPlugin extends JavaPlugin {
@@ -44,9 +45,16 @@ public class BackpacksPlugin extends JavaPlugin {
     }
     
     private Backend backend;
-
+    
     @Override
     public void onEnable() {
+        PluginDescriptionFile pdf = getDescription();
+        try {
+            Class.forName(NBT_CLASS);
+            isMinecraftCompatible = true;
+        } catch (ClassNotFoundException e) {
+            getLogger().log(Level.WARNING, "This version of Backpacks ({0}) was not compiled for the version of Minecraft that you''re running.", pdf.getVersion());
+        }
         try {
             reloadConfiguration();
             backend = getBackend(BackpacksConfig.getBackend());
@@ -111,11 +119,9 @@ public class BackpacksPlugin extends JavaPlugin {
 
     private Backend getBackend(String configured) {
         if (configured.equalsIgnoreCase("nbt")) {
-            try {
-                Class.forName(NBT_CLASS);
-                isMinecraftCompatible = true;
+            if (isMinecraftCompatible) {
                 return Backend.NBT;
-            } catch (ClassNotFoundException ex) {
+            } else {
                 getLogger().log(Level.WARNING, "Attempted to use NBT backend but CraftBukkit versions "
                         + "do not match. Defaulting to YAML.");
                 return Backend.YAML;
