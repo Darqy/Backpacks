@@ -363,8 +363,11 @@ public class CmdBackpackUtils implements CommandExecutor {
         
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent event) {
-            if (magnetEnabled(event.getPlayer().getName())) {
-                event.getPlayer().sendMessage(ChatColor.YELLOW + loginDisable);
+            final Player player = event.getPlayer();
+            if (magnetEnabled(player.getName())) {
+                player.sendMessage(ChatColor.YELLOW + loginDisable);
+                
+                disableMagnet(player.getName());
             }
         }
         
