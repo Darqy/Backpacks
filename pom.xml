@@ -1,15 +1,16 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
     <groupId>me.darqy</groupId>
     <artifactId>Backpacks</artifactId>
     <version>1.4.1</version>
     <name>Backpacks</name>
     <description>Have multiple backpacks in a group of worlds</description>
+    
+    <properties>
+        <build.number>SNAPSHOT</build.number>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
    
     <repositories>
         <repository>

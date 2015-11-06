@@ -1,5 +1,5 @@
 name: ${project.name}
-version: ${project.version}
+version: ${project.version}-b${build.number}
 description: ${project.description}
 main: me.darqy.backpacks.BackpacksPlugin
 author: Darq_Alder
