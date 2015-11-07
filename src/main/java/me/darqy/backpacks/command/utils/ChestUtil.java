@@ -72,7 +72,7 @@ public class ChestUtil implements PackUtil {
     public void use(Player p, BackpackGroupCache cache, UUID owner, Inventory inv, String backpack, String usage, String[] args) {
         if (isChestTransfering(p.getName())) {
             disableChestTransfering(p.getName());
-            p.sendMessage("Chest transfering disabled.");
+            p.sendMessage(ChatColor.YELLOW + "Chest transferring disabled.");
             return;
         }
         if (args.length < 2) {

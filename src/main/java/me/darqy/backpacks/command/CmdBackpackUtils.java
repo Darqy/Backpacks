@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 import me.darqy.backpacks.BackpacksPlugin;
-import me.darqy.backpacks.command.utils.ChestUtil;
-import me.darqy.backpacks.command.utils.EmptyUtil;
-import me.darqy.backpacks.command.utils.MagnetUtil;
-import me.darqy.backpacks.command.utils.RenameUtil;
-import me.darqy.backpacks.command.utils.PackUtil;
+import me.darqy.backpacks.command.utils.*;
 import me.darqy.backpacks.io.BackpackGroupCache;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -30,6 +26,7 @@ public class CmdBackpackUtils implements CommandExecutor {
         backpackUtils.put("chest", new ChestUtil(plugin));
         backpackUtils.put("rename", new RenameUtil());
         backpackUtils.put("empty", new EmptyUtil());
+        backpackUtils.put("transfer", new TransferUtil());
      
         for (PackUtil util : backpackUtils.values()) {
             instance.getServer().getPluginManager().registerEvents(util, plugin);
