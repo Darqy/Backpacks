@@ -16,7 +16,7 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class NBTIOHandler extends BackpackIOHandler {
+public class NBTIOHandler implements BackpackIOHandler {
 
     private final BackpackGroupCache cache;
     private final File data_dir;
@@ -45,11 +45,6 @@ public class NBTIOHandler extends BackpackIOHandler {
             list.add((String) o);
         }
         return list;
-    }
-
-    @Override
-    public int getBackpackCount(UUID owner) {
-        return getNBT(owner.toString()).c().size();
     }
 
     @Override

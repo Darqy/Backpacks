@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.bukkit.inventory.Inventory;
 
-public abstract class BackpackIOHandler {
+public interface BackpackIOHandler {
     
     /**
      * Saves a backpacks contents to disk.
@@ -30,13 +30,6 @@ public abstract class BackpackIOHandler {
      * @return returns two-layer map, first key being player UUID, second being the backpack name
      */
     public abstract Map<UUID, Map<String, Inventory>> loadAll();
-        
-    /**
-     * Gets the total amount of backpacks this owner has
-     * @param owner
-     * @return amount of backpacks a player has
-     */
-    public abstract int getBackpackCount(UUID owner);
     
     /**
      * A list of all the backpacks a player has. (loaded or not)
@@ -50,6 +43,6 @@ public abstract class BackpackIOHandler {
      * @param owner
      * @param backpack
      */
-    protected abstract void removeBackpack(UUID owner, String backpack);
+    public abstract void removeBackpack(UUID owner, String backpack);
     
 }

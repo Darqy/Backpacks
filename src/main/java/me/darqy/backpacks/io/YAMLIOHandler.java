@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class YAMLIOHandler extends BackpackIOHandler {
+public class YAMLIOHandler implements BackpackIOHandler {
     
     private static final String slot = "slot.";
     
@@ -93,15 +93,6 @@ public class YAMLIOHandler extends BackpackIOHandler {
     }
 
     @Override
-    public int getBackpackCount(UUID owner) {
-        File playerFolder = new File(data_dir, owner.toString());
-        if (!playerFolder.exists()) {
-            return 0;
-        }
-        return playerFolder.listFiles(dotYmlFilter).length;
-    }
-
-    @Override
     public List<String> getBackpackList(UUID owner) {
         File playerFolder = new File(data_dir, owner.toString());
         if (!playerFolder.exists()) {
@@ -116,7 +107,7 @@ public class YAMLIOHandler extends BackpackIOHandler {
     }
 
     @Override
-    protected void removeBackpack(UUID owner, String backpack) {
+    public void removeBackpack(UUID owner, String backpack) {
         File file = getBackpackFile(owner, backpack);
         if (file.exists()) {
             file.delete();

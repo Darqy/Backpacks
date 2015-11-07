@@ -26,7 +26,7 @@ public class EmptyUtil implements PackUtil {
         s.sendMessage(ChatColor.GRAY + "---");
         s.sendMessage(ChatColor.YELLOW + "Example usage:");
         s.sendMessage(ChatColor.YELLOW + " - " + ChatColor.RED + "/" + alias + " empty default " + ChatColor.YELLOW
-                    + "- Empties your \"default\" backpack.");
+                + "- Empties your \"default\" backpack.");
     }
 
     @Override

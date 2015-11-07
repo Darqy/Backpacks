@@ -2,10 +2,14 @@ package me.darqy.backpacks.io;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import me.darqy.backpacks.BackpackInventoryHolder;
@@ -208,7 +212,11 @@ public class BackpackGroupCache {
     
     public int getBackpackCount(UUID owner) {
         validState();
-        return io.getBackpackCount(owner);
+        return getBackpackNames(owner).size();
+    }
+    
+    private Set<String> getCachedBackpackNames(UUID owner) {
+        return backpacks.containsKey(owner)? backpacks.get(owner).keySet() : Collections.EMPTY_SET;
     }
     
     public List<String> getBackpackNames(Player player) {
@@ -217,7 +225,9 @@ public class BackpackGroupCache {
     
     public List<String> getBackpackNames(UUID owner) {
         validState();
-        return io.getBackpackList(owner);
+        Set<String> cached = new HashSet(getCachedBackpackNames(owner));
+        cached.addAll(io.getBackpackList(owner));
+        return new ArrayList(cached);
     }
     
     public Map<UUID, Map<String, Inventory>> getAllCached() {
