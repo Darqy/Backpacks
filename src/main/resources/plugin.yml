@@ -5,28 +5,27 @@ main: me.darqy.backpacks.BackpacksPlugin
 author: Darq_Alder
 softdepend: [Lockette, Deadbolt]
 
-
 commands:
   createpack:
     description: Creates a new backpack
     usage: /<command> (backpack) (player) (world)
-    aliases: [cpack]
+    aliases: [newpack, cpack, packcreate]
   backpack:
     description: Opens the player's backpack
     usage: /<command> (backpack)
-    aliases: [pack]
+    aliases: [pack, knapsack]
   inspectpack:
     description: Opens a read-only version of a backpack
     usage: /<command> [player] (backpack) (world)
-    aliases: [ipack]
+    aliases: [ipack, packinspect]
   listpacks:
     description: Lists a player's backpacks in a given world
     usage: /<command> (world) (player)
-    aliases: [lpacks]
+    aliases: [packs, knapsacks, listpack, packlist]
   packutils:
     description: Various utilities to help manage your backpack
     usage: /<command> [action] (p:[backpack])
-    aliases: [upack]
+    aliases: [upack, packutil]
   backpacks:
     description: Admin commands
     usage: /<command> [reload|backup]
