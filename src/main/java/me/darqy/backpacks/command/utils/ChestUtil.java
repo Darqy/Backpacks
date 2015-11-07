@@ -98,7 +98,7 @@ public class ChestUtil implements PackUtil {
         }
 
         enableChestTransfering(p.getName(), new ChestTransfer(inv, direction, item));
-        p.sendMessage(ChatColor.YELLOW + "Now click a chest to items.");
+        p.sendMessage(ChatColor.YELLOW + "Now click a chest to transfer items.");
     }
     
     @EventHandler
