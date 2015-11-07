@@ -47,6 +47,10 @@ public final class InventoryUtil {
         return true;
     }
     
+    public static boolean isValidMaterial(String string) {
+        return Material.matchMaterial(string.toUpperCase()) != null;
+    }
+    
     /**
      * Strips null ItemStacks from an ItemStack[]
      * 
