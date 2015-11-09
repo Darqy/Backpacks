@@ -38,15 +38,20 @@ public class EmptyUtil implements PackUtil {
     public void use(Player p, BackpackGroupCache cache, UUID owner, Inventory inv, String backpack, String usage, String[] args) {
         if (args.length < 1) {
             p.sendMessage(ChatColor.RED + "Not enough arguments.");
-            p.sendMessage(usage);
+            p.sendMessage(usage.replace("(p:[backpack])", ""));
             return;
         }
         
+        inv = cache.getBackpack(owner, args[0]);
+        if (inv == null) {
+            p.sendMessage(ChatColor.RED + "That backpack doesn't exist.");
+            return;
+        }
         inv.clear();
         
         // flag backpack as modified
         BackpackInventoryHolder.of(inv).setUnsavedChanges(true);
-        p.sendMessage(ChatColor.YELLOW + "Your \"" + backpack + "\" backpack was emptied.");
+        p.sendMessage(ChatColor.YELLOW + "Your \"" + args[0].toLowerCase() + "\" backpack was emptied.");
     }
 
 }

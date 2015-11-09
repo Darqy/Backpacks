@@ -32,7 +32,7 @@ public class RenameUtil implements PackUtil {
 
     @Override
     public void use(Player p, BackpackGroupCache cache, UUID owner, Inventory inv, String backpack, String usage, String[] args) {
-            if (args.length < 3) {
+            if (args.length < 1) {
                 p.sendMessage(ChatColor.RED + "Not enough arguments.");
                 p.sendMessage(usage.replace("(p:[backpack])", "[p:old-pack]"));
                 return;

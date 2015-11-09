@@ -2,7 +2,6 @@ package me.darqy.backpacks.command.utils;
 
 import java.util.UUID;
 import me.darqy.backpacks.BackpackInventoryHolder;
-import me.darqy.backpacks.BackpacksPlugin;
 import me.darqy.backpacks.io.BackpackGroupCache;
 import me.darqy.backpacks.util.InventoryUtil;
 import org.bukkit.ChatColor;
@@ -21,7 +20,7 @@ public class TransferUtil implements PackUtil {
     public void sendHelpText(CommandSender s, String alias, String usage) {
         s.sendMessage("");
         s.sendMessage(ChatColor.YELLOW + "Usage: " + usage.replace("(p:[backpack])", "[p:from-backpack]"));
-        s.sendMessage(ChatColor.YELLOW + " Similar to the chest utility, this transfers items between two backpacks or your inventory.");
+        s.sendMessage(ChatColor.YELLOW + " Similar to the chest utility, this can transfer items between two backpacks.");
         s.sendMessage(ChatColor.GRAY + "---");
         s.sendMessage(ChatColor.YELLOW + "- Simply enter the command and the transfer is completed instantly.");
         s.sendMessage(ChatColor.YELLOW + "- Items that don't fit will be left behind.");
