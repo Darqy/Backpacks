@@ -80,4 +80,27 @@ public final class InventoryUtil {
         }
     }
     
+    public static int spaceForItem(ItemStack stack, Inventory inv) {
+        int stackSize = stack.getMaxStackSize();
+        int space = 0;
+        for (ItemStack item : inv.getContents()) {
+            if (item == null || item.getType() == Material.AIR) {
+                space += stackSize;
+                continue;
+            }
+            if (item.isSimilar(stack)) {
+                space += stackSize - item.getAmount();
+            }
+        }
+        return space;
+    }
+    
+    /**
+     * @return whether an ItemStack can fit in an Inventory
+     */
+    public static boolean doesItemFit(ItemStack stack, Inventory inv) {
+        return spaceForItem(stack, inv) >= stack.getMaxStackSize();
+    }
+
+    
 }

@@ -6,6 +6,7 @@ import java.util.UUID;
 import me.darqy.backpacks.BackpackInventoryHolder;
 import me.darqy.backpacks.BackpacksPlugin;
 import me.darqy.backpacks.io.BackpackGroupCache;
+import me.darqy.backpacks.util.InventoryUtil;
 import me.darqy.backpacks.util.NMSUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -108,44 +109,49 @@ public class MagnetUtil implements PackUtil {
     
     @EventHandler(ignoreCancelled = true)
     public void randomPop(PlayerPickupItemEvent event) {
-        final Player p = event.getPlayer();
-        final Item item = event.getItem();
-        final ItemStack itemstack = item.getItemStack();
-        final String player = p.getName();
+        Player p = event.getPlayer();
+        Item item = event.getItem();
+        ItemStack itemstack = item.getItemStack();
+        String player = p.getName();
 
         if (magnetEnabled(player)) {
-            final BackpackInventoryHolder pack = magnets.get(player);
-            // mark holder as modified
-            pack.setUnsavedChanges(true);
-
+            final BackpackInventoryHolder pack = magnets.get(player);  
             Inventory inv = pack.getInventory();
-
-            // add item to inventory and check how much remained
-            HashMap<Integer, ItemStack> left = inv.addItem(itemstack);
-            int remains = left.isEmpty() ? 0 : left.get(0).getAmount();
-
-            if (remains > 0) {
+            // the real amount of the item being picked up
+            // not the amount the player has room for in their inventory.
+            int stackAmount = itemstack.getAmount() + event.getRemaining();     
+            itemstack = itemstack.clone();
+            itemstack.setAmount(stackAmount);
+            
+            int space = InventoryUtil.spaceForItem(itemstack, inv);
+            if (space == 0) {
                 p.sendMessage(ChatColor.RED + backpackFull);
                 disableMagnet(player);
-
-                ItemStack newStack = itemstack.clone();
-                newStack.setAmount(remains);
-
-                // spawn new Item at current item's location
-                final Item newItem = item.getWorld().dropItem(item.getLocation(), itemstack);
-
-                // maintain the previous item velocity
-                newItem.setVelocity(item.getVelocity());
-
-                item.remove(); // remove the existing item
+                return;
+            }
+            
+            // not enough room for the entire itemstack
+            if (space < stackAmount) {
+                // set itemstack to pickup amount to the amount of space available
+                itemstack.setAmount(space);
+                // new itemstack to replace the item on the ground
+                ItemStack remaining = itemstack.clone();
+                // set amount to the previous amount minus what we took
+                remaining.setAmount(stackAmount - space);
+                // set the remaining item's new amount
+                item.setItemStack(remaining);
             } else {
-                // picked up whole stack; remove item
+                // enough room for entire stack; remove it, simulate pickup
+                item.remove();
                 if (plugin.isMinecraftCompatible()) {
                     NMSUtil.simulateItemPickup(p, item);
                 }
-                item.remove();
             }
-
+            
+            // Add what we can fit to the backpack
+            inv.addItem(itemstack);
+            pack.setUnsavedChanges(true);
+            
             event.setCancelled(true);
         }
     }
