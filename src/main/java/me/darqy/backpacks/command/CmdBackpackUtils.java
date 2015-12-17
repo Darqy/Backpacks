@@ -71,14 +71,15 @@ public class CmdBackpackUtils implements CommandExecutor {
         
         String backpack = getExtraArg(args, "p:", "default");
         
-        String player = p.getName();
         UUID owner = p.getUniqueId();
         if (Permissions.utilBackpackOther(s)) {
-            player = getExtraArg(args, "pl:", player);
-            owner = BackpacksPlugin.getOfflinePlayerUUID(player);
-            if (owner == null) {
-                s.sendMessage(ChatColor.RED + "Player invalid.");
-                return true;
+            String player = getExtraArg(args, "pl:", null);
+            if (player != null) {
+                owner = BackpacksPlugin.getOfflinePlayerUUID(player);
+                if (owner == null) {
+                    s.sendMessage(ChatColor.RED + "Player invalid.");
+                    return true;
+                }
             }
         }
         
