@@ -293,7 +293,7 @@ public class BackpacksPlugin extends JavaPlugin {
     
     public static UUID getOfflinePlayerUUID(String playerName) {
         OfflinePlayer op = Bukkit.getOfflinePlayer(playerName);
-        return op.hasPlayedBefore()? op.getUniqueId() : null;
+        return op.getUniqueId();
     }
     
 }
